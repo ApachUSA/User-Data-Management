@@ -1,0 +1,413 @@
+﻿@model Person
+
+@{
+	ViewData["Title"] = "Person";
+}
+
+
+<form>
+	<div class="d-flex flex-column align-items-center">
+
+		<div class="d-flex w-50 justify-content-between">
+
+			<div class="d-flex flex-column w-100">
+
+				<h3>Personal info</h3>
+
+				<input asp-for="ID" hidden />
+				<input asp-for="AddressID" hidden />
+				<input asp-for="EmployeeID" hidden />
+
+				<div class="input-group mb-3">
+
+					<label class="input-group-text" asp-for="Surname"></label>
+
+					<input asp-for="Surname" class="form-control" />
+
+					<span asp-validation-for="Surname" class="text-danger"></span>
+
+				</div>
+
+				<div class="input-group mb-3">
+
+					<label class="input-group-text" asp-for="Name"></label>
+
+					<input asp-for="Name" class="form-control" />
+
+					<span asp-validation-for="Name" class="text-danger"></span>
+
+				</div>
+
+				<div class="input-group mb-3">
+
+					<label class="input-group-text" asp-for="Patronymic"></label>
+
+					<input asp-for="Patronymic" class="form-control" />
+
+					<span asp-validation-for="Patronymic" class="text-danger"></span>
+
+				</div>
+
+
+				<div class="input-group mb-3">
+
+					<label class="input-group-text">Birth date</label>
+
+					<input asp-for="Birth_Date" type="date" class="form-control" />
+
+					<span asp-validation-for="Birth_Date" class="text-danger"></span>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="d-flex w-50 justify-content-between">
+
+			<div class="d-flex flex-column w-100">
+
+				<h5>Address</h5>
+
+				<div class="input-group mb-3">
+
+					<select class="form-select d-inline w-auto" asp-for="Address.CityID" style="flex-grow: 0;"></select>
+
+					<input asp-for="Address.Location" class="form-control" placeholder="Enter address" />
+					@if (Model is not null && Model.AddressID != null)
+					{
+						<a class="main-btn" onclick="DeleteAddress('@Model.AddressID')"><i class="bi bi-trash"></i></a>
+					}
+
+					<span asp-validation-for="Address.Location" class="text-danger"></span>
+				</div>
+
+
+			</div>
+
+		</div>
+
+		<div class="d-flex w-50 justify-content-between">
+
+			<div class="d-flex flex-column w-100">
+
+				<h5>Contacts</h5>
+
+				@if (Model != null && Model.Contacts?.Count > 0)
+				{
+					@foreach (var contact in Model.Contacts)
+					{
+						<div class="input-group mb-3 phone_list">
+
+							<input hidden asp-for="@contact.ID" />
+
+							<label class="input-group-text">Phone number</label>
+
+							<input asp-for="@contact.Phone_Number" class="form-control" />
+
+							<a class="main-btn" onclick="DeleteContact('@contact.ID')"><i class="bi bi-trash"></i></a>
+
+							<span asp-validation-for="@contact.Phone_Number" class="text-danger"></span>
+
+						</div>
+					}
+
+				}
+				<div class="input-group mb-3 phone_list">
+
+					<input hidden id="contact_ID" />
+
+					<label class="input-group-text">Phone number</label>
+
+					<input id="contact_Phone_Number" class="form-control" />
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="d-flex w-50 justify-content-between">
+
+			<div class="d-flex flex-column w-100">
+
+				<h5>Employee</h5>
+
+				@if (Model != null && Model.EmployeeID != null)
+				{
+					<a class="text-danger" style="width: fit-content" onclick="DeleteEmployee('@Model.EmployeeID')">Delete employee</a>
+				}
+
+				<div class="input-group mb-3">
+
+					<label class="input-group-text">Date of hire</label>
+
+					<input asp-for="Employee.Date_of_hire" type="date" class="form-control" />
+
+					<label class="input-group-text" asp-for="Employee.Salary"></label>
+
+					<input asp-for="Employee.Salary" type="number" class="form-control" />
+
+					<span class="input-group-text" style="min-width: 0">$</span>
+
+					<span asp-validation-for="Employee.Salary" class="text-danger"></span>
+
+				</div>
+
+				<div class="input-group mb-3">
+
+					<label class="input-group-text" asp-for="Employee.Position.Department.Company"></label>
+
+					<select class="form-select d-inline w-auto" id="Company" onchange="UpdateDepartment()"></select>
+
+				</div>
+
+				<div class="input-group mb-3">
+
+					<label class="input-group-text" asp-for="Employee.Position.Department"></label>
+
+					<select class="form-select d-inline w-auto" id="Department" onchange="UpdatePosition()"></select>
+
+				</div>
+
+				<div class="input-group mb-3">
+
+					<label class="input-group-text" asp-for="Employee.PositionID"></label>
+
+					<select class="form-select d-inline w-auto" asp-for="Employee.PositionID" aria-label="Default select example"></select>
+
+				</div>
+
+			</div>
+
+		</div>
+
+
+		@if (Model is null)
+		{
+			<div class="d-flex justify-content-center w-50">
+
+				<a class="main-btn w-100" onclick="CreatePerson()">
+					Create
+				</a>
+			</div>
+		}
+		else
+		{
+			<div class="d-flex justify-content-between align-items-center w-50">
+
+				<a class="text-danger w-100" onclick="DeletePerson('@Model?.ID','@Model?.AddressID','@Model?.EmployeeID')">
+					Delete person
+				</a>
+
+				<a class="main-btn w-100" onclick="UpdatePerson()">
+					Save
+				</a>
+
+			</div>
+		}
+
+	</div>
+
+</form>
+
+<style>
+
+	.input-group-margin > :not(:last-child) {
+		margin-right: 10px;
+	}
+
+	.input-group-text {
+		min-width: 120px;
+	}
+
+	.input-group > .form-control {
+		border: 1px solid #ced4da;
+	}
+
+	.form-control:focus {
+		box-shadow: 0 0 0 0.1rem white, 0 0 0 0.1rem #258cfb;
+	}
+
+</style>
+
+<script>
+	window.addEventListener('load', function () {
+		UpdateCities('@Model?.Address?.CityID');
+		UpdateCompany(['@Model?.Employee?.Position?.Department?.ID', '@Model?.Employee?.PositionID']);
+	});
+</script>
+
+
+<script>
+
+	function CreatePerson() {
+
+		var formData = FillForm();
+
+		$.ajax({
+			url: "@Url.Action("CreatePerson", "Person")",
+			type: "POST",
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function (data) {
+				var url = '@Url.Action("Index", "Staff")';
+				window.location.href = url;
+			},
+			error: function (xhr) {
+				ErrorToastShow(xhr.responseText);
+			}
+		});
+
+	}
+
+	function UpdatePerson() {
+
+		var formData = FillForm();
+
+		$.ajax({
+			url: "@Url.Action("UpdatePerson", "Person")",
+			type: "POST",
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function (data) {
+				var url = '@Url.Action("PersonDetails", "Person")?personID=' + '@Model?.ID';
+				window.location.href = url;
+			},
+			error: function (xhr) {
+				ErrorToastShow(xhr.responseText);
+			}
+		});
+
+	}
+
+	function DeletePerson(pID, aID, eID) {
+
+		$.ajax({
+			url: "@Url.Action("DeletePerson", "Person")",
+			type: "POST",
+			data: {
+				personID: pID,
+				addressID: aID,
+				employeeID: eID,
+			},
+			success: function (data) {
+				var url = '@Url.Action("Index", "Staff")';
+				window.location.href = url;
+			},
+			error: function (xhr) {
+				ErrorToastShow(xhr.responseText);
+			}
+		});
+
+	}
+
+	function DeleteAddress(ID) {
+
+		$.ajax({
+			url: "@Url.Action("DeleteAddress", "Person")",
+			type: "POST",
+			data: {
+				addressID: ID
+			},
+			success: function (data) {
+				var url = '@Url.Action("PersonDetails", "Person")?personID=' + '@Model?.ID';
+				window.location.href = url;
+			},
+			error: function (xhr) {
+				ErrorToastShow(xhr.responseText);
+			}
+		});
+
+	}
+
+	function DeleteEmployee(ID) {
+
+		$.ajax({
+			url: "@Url.Action("DeleteEmployee", "Person")",
+			type: "POST",
+			data: {
+				employeeID: ID
+			},
+			success: function (data) {
+				var url = '@Url.Action("PersonDetails", "Person")?personID=' + '@Model?.ID';
+				window.location.href = url;
+			},
+			error: function (xhr) {
+				ErrorToastShow(xhr.responseText);
+			}
+		});
+
+	}
+
+	function DeleteContact(ID) {
+
+		$.ajax({
+			url: "@Url.Action("DeleteContact", "Person")",
+			type: "POST",
+			data: {
+				contactID: ID
+			},
+			success: function (data) {
+				var url = '@Url.Action("PersonDetails", "Person")?personID=' + '@Model?.ID';
+				window.location.href = url;
+			},
+			error: function (xhr) {
+				ErrorToastShow(xhr.responseText);
+			}
+		});
+
+	}
+
+	function FillForm() {
+		var formData = new FormData();
+		formData.append("ID", $("#ID").val());
+		formData.append("Surname", $("#Surname").val());
+		formData.append("Name", $("#Name").val());
+		formData.append("Patronymic", $("#Patronymic").val());
+		formData.append("Birth_Date", $("#Birth_Date").val());
+		formData.append("AddressID", $("#AddressID").val());
+		formData.append("EmployeeID", $("#EmployeeID").val());
+
+		var location = $("#Address_Location").val();
+		var city = $("#Address_CityID").val();
+		var addressID = $("#AddressID").val();
+
+		if (location != "" || city != "" || addressID != "") {
+			formData.append("Address.ID", addressID);
+			formData.append("Address.Location", location);
+			formData.append("Address.CityID", city);
+		}
+
+		var employeeID = $("#EmployeeID").val();
+		var date_of_hire = $("#Employee_Date_of_hire").val();
+		var salary = $("#Employee_Salary").val().replace('.', ',');
+		var positionID = $("#Employee_PositionID").val();
+
+		if (employeeID != "" || date_of_hire != "" || salary != "" || positionID != "") {
+			formData.append("Employee.ID", employeeID);
+			formData.append("Employee.Date_of_hire", date_of_hire);
+			formData.append("Employee.Salary", salary);
+			formData.append("Employee.PositionID", positionID);
+		}
+
+		var contacts = document.querySelectorAll('.phone_list');
+
+		contacts.forEach(function (contact, index) {
+
+			var id = contact.querySelector('#contact_ID').value;
+			var phone = contact.querySelector('#contact_Phone_Number').value;
+			if (id != "" || phone != "") {
+				formData.append("Contacts[" + index + "].ID", id);
+				formData.append("Contacts[" + index + "].Phone_Number", phone);
+			}
+		});
+
+		return formData;
+	}
+
+
+
+</script>
