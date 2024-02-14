@@ -1,0 +1,102 @@
+﻿@{
+	ViewData["Title"] = "Salary";
+}
+
+<div class="filters d-flex">
+
+	<select class="f-select" id="Company" onchange="UpdateDepartment()"></select>
+
+	<select class="f-select" id="Department" onchange="UpdatePosition()"></select>
+
+	<select class="f-select" id="Employee_PositionID"></select>
+
+	<a class="main-btn" onclick="GetSalaryTablePartial()">Filter</a>
+
+	<a class="main-btn" onclick="DownloadTable()"><i class="bi bi-file-earmark-arrow-down me-2"></i>  Download</a>
+
+</div>
+
+<div class="bg-white rounded-2 mt-4" id="SalaryTable">
+</div>
+
+<style>
+	.filters > :not(:last-child) {
+		margin-right: 10px;
+	}
+</style>
+
+<script>
+	window.addEventListener('load', function () {
+		GetSalaryTablePartial();
+		UpdateCities();
+		UpdateCompany();
+	});
+</script>
+
+<script>
+
+	function GetSalaryTablePartial() {
+
+		var formData = new FormData();
+		formData.append("Position", $("#Employee_PositionID").val());
+		formData.append("Department", $("#Department").val());
+		formData.append("Company", $("#Company").val());
+
+		$.ajax({
+			url: "@Url.Action("GetSalaryTable", "Staff")",
+			type: "POST",
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function (data) {
+				$("#SalaryTable").html(data);
+			},
+			error: function (xhr) {
+				ErrorToastShow(xhr.responseText);
+			}
+		});
+
+	}
+
+	function DownloadTable() {
+
+		var formData = new FormData();
+
+		var persons = document.querySelectorAll('#SalaryRow');
+
+		persons.forEach(function (person, index) {
+
+			formData.append("tableSalaryVM[" + index + "].FullName", person.querySelector('#FullNameCell').textContent);
+			formData.append("tableSalaryVM[" + index + "].Position", person.querySelector('#PositionCell').textContent);
+			formData.append("tableSalaryVM[" + index + "].Department", person.querySelector('#DepartmentCell').textContent);
+			formData.append("tableSalaryVM[" + index + "].Company", person.querySelector('#CompanyCell').textContent);
+			formData.append("tableSalaryVM[" + index + "].Salary", person.querySelector('#SalaryCell').textContent);
+
+		});
+
+		$.ajax({
+			url: "@Url.Action("DownloadSalaryTable", "Staff")",
+			type: "POST",
+			data: formData,
+			contentType: false,
+			processData: false,
+			xhrFields: {
+				responseType: 'blob'
+			},
+			success: function (data, textStatus, xhr) {
+
+				var url = window.URL.createObjectURL(data);
+				var a = document.createElement('a');
+				a.href = url;
+				a.download = 'SalaryReport.txt';
+				document.body.appendChild(a);
+				a.click();
+				window.URL.revokeObjectURL(url);
+			},
+			error: function (xhr) {
+				ErrorToastShow(xhr.responseText);
+			}
+		});
+
+	}
+</script>
