@@ -33,7 +33,43 @@ In **appsettings.json**, paste the name of your server in the connection string
 ## Screenshots
 
 <div align="center">
-  <img src="/wwwroot/screenshots/ToDo.png"/>
-  <p>ToDo</p>
+  <img src="/Screenshots/Start.png"/>
+  <p>Start page</p>
+  <br/>
+</div>
+
+<div align="center">
+  <img src="/Screenshots/Staff.png"/>
+  <p>Staff page</p>
+  <br/>
+</div>
+
+<div align="center">
+  <img src="/Screenshots/StaffWithFilters.png"/>
+  <p>Filtered staff</p>
+  <br/>
+</div>
+
+<div align="center">
+  <img src="/Screenshots/PersonCard.png"/>
+  <p>Person card page</p>
+  <br/>
+</div>
+
+<div align="center">
+  <img src="/Screenshots/Salary.png"/>
+  <p>Salary report page</p>
+  <br/>
+</div>
+
+<div align="center">
+  <img src="/Screenshots/SalaryWithFilters.png"/>
+  <p>Filtered salary report</p>
+  <br/>
+</div>
+
+<div align="center">
+  <img src="/Screenshots/SalaryFile.png"/>
+  <p>Downloaded file example</p>
   <br/>
 </div>
