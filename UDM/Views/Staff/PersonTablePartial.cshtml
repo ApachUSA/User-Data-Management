@@ -1,0 +1,34 @@
+﻿@model List<TableStaffVM>
+
+@{
+	int index = 1;
+}
+<table class="table">
+	<thead>
+		<tr class="text-center">
+			<th scope="col">№</th>
+			<th scope="col">Full name</th>
+			<th scope="col">City</th>
+			<th scope="col">Position</th>
+			<th scope="col">Department</th>
+			<th scope="col">Company</th>
+		</tr>
+	</thead>
+	<tbody class="table-group-divider text-center">
+		@if (Model != null)
+		{
+
+			@foreach (var person in Model)
+			{
+				<tr onclick="PersonDetail('@person.Id')">
+					<td>@(index++)</td>
+					<td>@person.FullName</td>
+					<td>@(person.City == null ? "―" : person.City)</td>
+					<td>@(person.Position == null ? "―" : person.Position)</td>
+					<td>@(person.Department == null ? "―" : person.Department)</td>
+					<td>@(person.Company == null ? "―" : person.Company)</td>
+				</tr>
+			}
+		}
+	</tbody>
+</table>
