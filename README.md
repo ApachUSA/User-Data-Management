@@ -23,10 +23,14 @@ Simple web-based application for user data accounting. Realization of technical 
 
 ## How to start
 
-In **appsettings.json**, paste the name of your server in the connection string
+1. Create DB (/SQL_Scripts/):
+   - open and execute CreateTables.sql;
+   - open and execute InsertData.sql;
+   - open and execute all procedure</br>;
+2. In **appsettings.json**, paste the name of your server and db in the connection string
 ```
     "ConnectionStrings": {
-    "DefaultConnection": "Server=your_name;Database=UkrPoshtaDB;Trusted_Connection=True; trustServerCertificate=true;"
+    "DefaultConnection": "Server=your_name; Database=db_name; Trusted_Connection=True; trustServerCertificate=true;"
   },
 ```
 
