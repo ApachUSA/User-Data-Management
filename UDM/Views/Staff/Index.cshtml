@@ -1,0 +1,86 @@
+﻿
+@{
+	ViewData["Title"] = "Staff";
+}
+
+<div class="filters d-flex justify-content-between">
+
+	<input type="text" placeholder="Enter full name separate by space" class="flex-fill" id="FullName">
+
+	<select class="f-select" id="Address_CityID"></select>
+
+	<select class="f-select" id="Company" onchange="UpdateDepartment()"></select>
+
+	<select class="f-select" id="Department" onchange="UpdatePosition()"></select>
+
+	<select class="f-select" id="Employee_PositionID"></select>
+
+	<a class="main-btn" onclick="GetPersonTablePartial()">Filter</a>
+
+</div>
+
+<div class="mt-4 mb-2">
+
+	<a class="text-warning" asp-action="CreatePerson" asp-controller="Person"><i class="bi bi-plus-circle"></i>  Create new employer</a>
+
+</div>
+
+
+<div class="bg-white rounded-2" id="PersonTable">
+	
+</div>
+
+<div class="modal_page">
+</div>
+
+<style>
+	.filters > :not(:last-child) {
+		margin-right: 10px;
+	}
+</style>
+
+<script>
+	window.addEventListener('load', function () {
+		GetPersonTablePartial();
+		UpdateCities();
+		UpdateCompany();
+	});
+</script>
+
+<script>
+
+	function GetPersonTablePartial() {
+
+		var formData = new FormData();
+		formData.append("FullName", $("#FullName").val());
+		formData.append("City", $("#Address_CityID").val());
+		formData.append("Position", $("#Employee_PositionID").val());
+		formData.append("Department", $("#Department").val());
+		formData.append("Company", $("#Company").val());
+
+		$.ajax({
+			url: "@Url.Action("GetPersonTable", "Staff")",
+			type: "POST",
+			data: formData,
+			contentType: false,
+			processData: false,
+			success: function (data) {
+				$("#PersonTable").html(data);
+
+			},
+			error: function (xhr) {
+				ErrorToastShow(xhr.responseText);
+			}
+		});
+
+	}
+
+	function PersonDetail(ID) {
+
+		var url = '@Url.Action("PersonDetails", "Person")?personID=' + ID;
+
+		window.location.href = url;
+
+	}
+
+</script>
