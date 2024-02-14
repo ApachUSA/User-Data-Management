@@ -1,8 +1,68 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model Company
+
+@{
+	ViewData["Title"] = "About";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex flex-column">
+
+	<div class="banner d-flex justify-content-between container-fluid">
+
+		<div class="banner-text">
+
+			<h1 class="banner-headline">
+				Ukrposhta.
+				</br>
+				Ukraine’s national post
+			</h1>
+			<span class="banner-under-text">30 years by your side</span>
+
+		</div>
+
+
+		<div class="banner-image">
+
+			<img class="banner-img" src="" />
+
+		</div>
+
+	</div>
+
+	<div>
+
+		<h3>General information</h3>
+
+		<p>@Model?.Company_Info</p>
+
+	</div>
+
 </div>
+
+<style>
+
+	.banner {
+		height: 400px;
+		background-image: url(https://www.ukrposhta.ua/design/web/images/banners/about-us-banner.webp);
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position-x: right;
+	}
+
+	.banner-headline{
+		font-family: "Rubik",sans-serif;
+		font-size: 60px;
+		font-weight: 700;
+		line-height: 70px;
+		padding: 95px 0 0;
+		max-width: 504px !important;
+		color: #0e2f4b;
+	}
+
+	.banner-under-text{
+		font-family: "Open Sans",sans-serif;
+		font-size: 20px;
+		line-height: 30px;
+		color: #0e2f4b;
+	}
+
+</style>
