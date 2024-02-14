@@ -1,26 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using UDM.Models;
+using UDM.Services.Interfaces;
 
 namespace UDM.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ISelectDataService _selectDataService;
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+		public HomeController(ISelectDataService selectDataService)
+		{
+			_selectDataService = selectDataService;
+		}
 
-        public IActionResult Index()
+		public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            var company = await _selectDataService.GetCompaniesAsync();
 
-        public IActionResult Privacy()
-        {
-            return View();
+			return View(company.Where(x => x.Company_Name == "”крпошта").FirstOrDefault());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
