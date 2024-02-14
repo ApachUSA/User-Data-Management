@@ -1,49 +1,240 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - UDM</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/UDM.styles.css" asp-append-version="true" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - UDM</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+	<link rel="icon" type="image/x-icon" href="https://www.ukrposhta.ua/apple-touch-icon.svg">
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/UDM.styles.css" asp-append-version="true" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;400&family=Rubik:wght@700&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UDM</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+	<header class="bg-white">
+		<nav class="navbar navbar-expand-sm  navbar-light bg-white box-shadow mb-3">
+			<div class="container d-flex justify-content-between">
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - UDM - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+				<div>
+
+					<a class="" asp-area="" asp-controller="Home" asp-action="Index"><img src="https://www.ukrposhta.ua/design/web/images/site-en-logo.svg" /></a>
+
+				</div>
+
+				<div class="d-flex">
+
+					<a class="" asp-controller="Staff" asp-action="Index">
+
+						<div class="nav-btn">Staff</div>
+
+					</a>
+
+					<a class="" asp-controller="Staff" asp-action="SalaryIndex">
+
+						<div class="nav-btn">Salary</div>
+
+					</a>
+
+				</div>
+
+			</div>
+
+		</nav>
+	</header>
+	<div class="container">
+		<main role="main" class="pb-3">
+			@RenderBody()
+		</main>
+	</div>
+
+	<footer class=" footer  text-muted" style="background-color: #181c1f">
+		<div class="container">
+			<div class="d-flex justify-content-between align-items-center">
+
+				<div class="text-muted">
+
+					Realization of technical assignment for <a style="outline: medium" target="_blank" href="https://www.ukrposhta.ua/en/pro-ukrposhtu">Ukrposhta</a>  company
+
+				</div>
+
+				<div class="text-muted">
+
+					Created by: <a style="outline: medium" target="_blank" href="https://www.linkedin.com/in/vadym-lisovskyi/">Vadym Lisovskyi</a>
+
+				</div>
+
+			</div>
+		</div>
+	</footer>
+
+	<div class="toast-container position-fixed top-0 end-0 p-3" id="toast-container" style="margin-top: 100px">
+	</div>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+<script>
+
+	function UpdateCities(selected) {
+
+		$.ajax({
+			url: "@Url.Action("GetCitiesData", "Staff")",
+			type: "GET",
+			success: function (data) {
+				$("#Address_CityID").empty();
+
+				$("#Address_CityID").append($("<option>", {
+					value: '',
+					text: 'Select city'
+				}));
+
+				data.forEach(function (company) {
+					$("#Address_CityID").append($("<option>", {
+						value: company.id,
+						text: company.city_Name
+					}));
+				});
+				if (selected != "") $("#Address_CityID").val(selected);
+
+			},
+			error: function (xhr, status, error) {
+				console.error("Error fetching positions:", error);
+			}
+		});
+	}
+
+	function UpdateCompany(selectedArray) {
+
+		$.ajax({
+			url: "@Url.Action("GetCompaniesData", "Staff")",
+			type: "GET",
+			success: function (data) {
+				$("#Department").empty();
+				$("#Employee_PositionID").empty();
+
+				data.forEach(function (company) {
+					$("#Company").append($("<option>", {
+						value: company.id,
+						text: company.company_Name
+					}));
+				});
+
+				UpdateDepartment(selectedArray);
+			},
+			error: function (xhr, status, error) {
+				console.error("Error fetching positions:", error);
+			}
+		});
+	}
+
+	function UpdateDepartment(selectedArray) {
+
+		$.ajax({
+			url: "@Url.Action("GetDepartmentData", "Staff")",
+			type: "GET",
+			data: { companyID: $("#Company").val() },
+			success: function (data) {
+				$("#Department").empty();
+				$("#Employee_PositionID").empty();
+
+				$("#Department").append($("<option>", {
+					value: '',
+					text: 'Select department'
+				}));
+
+				data.forEach(function (department) {
+					$("#Department").append($("<option>", {
+						value: department.id,
+						text: department.department_Name
+					}));
+				});
+				if (selectedArray != undefined) {
+					$("#Department").val(selectedArray[0]);
+					UpdatePosition(selectedArray[1]);
+				}
+				else {
+					UpdatePosition();
+				}
+
+			},
+			error: function (xhr, status, error) {
+				console.error("Error fetching positions:", error);
+			}
+		});
+	}
+
+	function UpdatePosition(selected) {
+
+		$.ajax({
+			url: "@Url.Action("GetPositionsData", "Staff")",
+			type: "GET",
+			data: { departID: $("#Department").val() },
+			success: function (data) {
+				$("#Employee_PositionID").empty();
+
+				$("#Employee_PositionID").append($("<option>", {
+					value: '',
+					text: 'Select position'
+				}));
+
+				data.forEach(function (position) {
+					$("#Employee_PositionID").append($("<option>", {
+						value: position.id,
+						text: position.position_Name
+					}));
+				});
+
+				if (selected != "") $("#Employee_PositionID").val(selected);
+			},
+			error: function (xhr, status, error) {
+				console.error("Error fetching positions:", error);
+			}
+		});
+	}
+
+	function SuccesToastShow(toastText) {
+
+		let id = new Date().getTime();
+		let toast = `<div class="toast fade" role="alert" style=" width: 300px;" aria-live="assertive" data-autohide="true" aria-atomic="true" data-delay="3000" id=${id}>
+									<div class="toast-header">
+										<img src="https://cdn-icons-png.flaticon.com/512/6785/6785304.png" width="15" height="15" class="rounded me-2" alt="...">
+											<strong class="me-auto">Success</strong>
+									</div>
+									<div class="toast-body">
+											<span id="s_toastText">${toastText}</span>
+									</div>
+								</div>`
+		let toastNode = document.createElement('div');
+		toastNode.innerHTML = toast;
+		document.getElementById('toast-container').appendChild(toastNode);
+		$(`#${id}`).toast('show');
+
+	}
+
+	function ErrorToastShow(toastText) {
+
+		let id = new Date().getTime();
+		let toast = `<div class="toast fade" role="alert" style=" width: 300px;" aria-live="assertive" data-autohide="true" aria-atomic="true" data-delay="3000" id=${id}>
+										<div class="toast-header">
+												<img src="https://cdn-icons-png.flaticon.com/512/463/463612.png" width="15" height="15" class="rounded me-2" alt="...">
+											<strong class="me-auto">Oops</strong>
+										</div>
+										<div class="toast-body">
+												<span id="s_toastText">${toastText}</span>
+										</div>
+									</div>`
+		let toastNode = document.createElement('div');
+		toastNode.innerHTML = toast;
+		document.getElementById('toast-container').appendChild(toastNode);
+		$(`#${id}`).toast('show');
+	}
+</script>
