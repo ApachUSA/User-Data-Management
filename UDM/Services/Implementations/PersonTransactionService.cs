@@ -8,15 +8,15 @@ namespace UDM.Services.Implementations
 {
 	public class PersonTransactionService : IPersonTransactionService
 	{
-		private readonly IConfiguration _configuration;
+		private readonly IDbConnectionProvider _connectionProvider;
 		private readonly IPersonService _personService;
 		private readonly IEmployeeService _employeeService;
 		private readonly IAddressService _addressService;
 		private readonly IContactService _contactService;
 
-		public PersonTransactionService(IConfiguration configuration, IPersonService personService, IEmployeeService employeeService, IAddressService addressService, IContactService contactService)
+		public PersonTransactionService(IDbConnectionProvider connectionProvider, IPersonService personService, IEmployeeService employeeService, IAddressService addressService, IContactService contactService)
 		{
-			_configuration = configuration;
+			_connectionProvider = connectionProvider;
 			_personService = personService;
 			_employeeService = employeeService;
 			_addressService = addressService;
@@ -50,7 +50,7 @@ namespace UDM.Services.Implementations
 		/// <returns>A service response indicating the success of the operation.</returns>
 		public async Task<ServiceResponseVM> CreatePersonAsync(Person person)
 		{
-			using SqlConnection con = new(_configuration.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			SqlTransaction transaction = con.BeginTransaction();
@@ -89,7 +89,7 @@ namespace UDM.Services.Implementations
 		/// <returns>A service response indicating the success of the operation.</returns>
 		public async Task<ServiceResponseVM> UpdatePersonAsync(Person person)
 		{
-			using SqlConnection con = new(_configuration.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			SqlTransaction transaction = con.BeginTransaction();
@@ -134,7 +134,7 @@ namespace UDM.Services.Implementations
 		/// <returns>A service response indicating the success of the operation.</returns>
 		public async Task<ServiceResponseVM> DeletePersonAsync(Guid personID, Guid? addressID, Guid? employeeID)
 		{
-			using SqlConnection con = new(_configuration.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			SqlTransaction transaction = con.BeginTransaction();
@@ -169,7 +169,7 @@ namespace UDM.Services.Implementations
 		/// <returns>A service response indicating the success of the operation.</returns>
 		public async Task<ServiceResponseVM> DeleteContactAsync(Guid contactID)
 		{
-			using SqlConnection con = new(_configuration.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			SqlTransaction transaction = con.BeginTransaction();
@@ -199,7 +199,7 @@ namespace UDM.Services.Implementations
 		/// <returns>A service response indicating the success of the operation.</returns>
 		public async Task<ServiceResponseVM> DeleteAddressAsync(Guid addressID)
 		{
-			using SqlConnection con = new(_configuration.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			SqlTransaction transaction = con.BeginTransaction();
@@ -229,7 +229,7 @@ namespace UDM.Services.Implementations
 		/// <returns>A service response indicating the success of the operation.</returns>
 		public async Task<ServiceResponseVM> DeleteEmployeeAsync(Guid employeeID)
 		{
-			using SqlConnection con = new(_configuration.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			SqlTransaction transaction = con.BeginTransaction();

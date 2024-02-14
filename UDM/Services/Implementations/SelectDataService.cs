@@ -7,18 +7,18 @@ namespace UDM.Services.Implementations
 {
 	public class SelectDataService : ISelectDataService
 	{
-		private readonly IConfiguration _config;
+		private readonly IDbConnectionProvider _connectionProvider;
 
-		public SelectDataService(IConfiguration config)
+		public SelectDataService(IDbConnectionProvider connectionProvider)
 		{
-			_config = config;
+			_connectionProvider = connectionProvider;
 		}
 
 		public async Task<List<City>> GetCitiesAsync()
 		{
 			DataTable dt = new();
 
-			using SqlConnection con = new(_config.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			using SqlCommand cmd = new("select * from Cities", con);
@@ -43,7 +43,7 @@ namespace UDM.Services.Implementations
 		{
 			DataTable dt = new();
 
-			using SqlConnection con = new(_config.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			using SqlCommand cmd = new("select * from Companies", con);
@@ -70,7 +70,7 @@ namespace UDM.Services.Implementations
 
 			DataTable dt = new();
 
-			using SqlConnection con = new(_config.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			using SqlCommand cmd = new($"select * from Departments where Company_id = '{companyID}'", con);
@@ -96,7 +96,7 @@ namespace UDM.Services.Implementations
 
 			DataTable dt = new();
 
-			using SqlConnection con = new(_config.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			using SqlCommand cmd = new($"select * from Positions where Department_id = '{departID}'", con);

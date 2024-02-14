@@ -9,12 +9,12 @@ namespace UDM.Services.Implementations
 {
 	public class AddressService : IAddressService
 	{
-        private readonly IConfiguration _config;
+		private readonly IDbConnectionProvider _connectionProvider;
 
-        public AddressService(IConfiguration config)
-        {
-            _config = config;
-        }
+		public AddressService(IDbConnectionProvider connectionProvider)
+		{
+			_connectionProvider = connectionProvider;
+		}
 
 		/// <summary>
 		/// Retrieves an address by its unique identifier asynchronously.
@@ -25,7 +25,7 @@ namespace UDM.Services.Implementations
         {
             DataTable dt = new();
 
-            using SqlConnection con = new(_config.GetConnectionString("DefaultConnection"));
+            using SqlConnection con = _connectionProvider.GetConnection();
             await con.OpenAsync();
 
             using SqlCommand cmd = new($"select * from Addresses where Address_id = '{addressID}'", con);

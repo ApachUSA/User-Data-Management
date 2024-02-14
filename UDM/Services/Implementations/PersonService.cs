@@ -9,12 +9,12 @@ namespace UDM.Services.Implementations
 {
     public class PersonService : IPersonService
     {
-        private readonly IConfiguration _config;
+		private readonly IDbConnectionProvider _connectionProvider;
 
-        public PersonService(IConfiguration config)
-        {
-            _config = config;
-        }
+		public PersonService(IDbConnectionProvider connectionProvider)
+		{
+			_connectionProvider = connectionProvider;
+		}
 
 		/// <summary>
 		/// Retrieves a person by their unique identifier asynchronously.
@@ -25,7 +25,7 @@ namespace UDM.Services.Implementations
         {
             DataTable dt = new();
 
-            using SqlConnection con = new(_config.GetConnectionString("DefaultConnection"));
+            using SqlConnection con = _connectionProvider.GetConnection();
             await con.OpenAsync();
 
             using SqlCommand cmd = new($"select * from Persons where Person_id = '{personID}'", con);

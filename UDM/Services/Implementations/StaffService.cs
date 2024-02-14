@@ -10,12 +10,12 @@ namespace UDM.Services.Implementations
 {
     public class StaffService : IStaffService
     {
-        private readonly IConfiguration _config;
+		private readonly IDbConnectionProvider _connectionProvider;
 
-        public StaffService(IConfiguration config)
-        {
-            _config = config;
-        }
+		public StaffService(IDbConnectionProvider connectionProvider)
+		{
+			_connectionProvider = connectionProvider;
+		}
 
 		/// <summary>
 		/// Retrieves a list of persons with applied filters asynchronously.
@@ -26,7 +26,7 @@ namespace UDM.Services.Implementations
         {
             DataTable dt = new();
 
-            using SqlConnection con = new(_config.GetConnectionString("DefaultConnection"));
+            using SqlConnection con = _connectionProvider.GetConnection();
             await con.OpenAsync();
 
             SqlCommand command = con.CreateCommand();
@@ -69,7 +69,7 @@ namespace UDM.Services.Implementations
         {
 			DataTable dt = new();
 
-			using SqlConnection con = new(_config.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			SqlCommand command = con.CreateCommand();

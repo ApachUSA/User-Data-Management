@@ -8,12 +8,12 @@ namespace UDM.Services.Implementations
 {
 	public class EmployeeService : IEmployeeService
 	{
-        private readonly IConfiguration _config;
+		private readonly IDbConnectionProvider _connectionProvider;
 
-        public EmployeeService(IConfiguration config)
-        {
-            _config = config;
-        }
+		public EmployeeService(IDbConnectionProvider connectionProvider)
+		{
+			_connectionProvider = connectionProvider;
+		}
 
 		/// <summary>
 		/// Retrieves an employee by their unique identifier asynchronously.
@@ -24,7 +24,7 @@ namespace UDM.Services.Implementations
         {
             DataTable dt = new();
 
-            using SqlConnection con = new(_config.GetConnectionString("DefaultConnection"));
+            using SqlConnection con = _connectionProvider.GetConnection();
             await con.OpenAsync();
 
             using SqlCommand cmd = new($"select * from Employees " +

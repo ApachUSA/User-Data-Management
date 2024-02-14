@@ -9,11 +9,11 @@ namespace UDM.Services.Implementations
 {
 	public class ContactService : IContactService
 	{
-		private readonly IConfiguration _config;
+		private readonly IDbConnectionProvider _connectionProvider;
 
-		public ContactService(IConfiguration config)
+		public ContactService(IDbConnectionProvider connectionProvider)
 		{
-			_config = config;
+			_connectionProvider = connectionProvider;
 		}
 
 		/// <summary>
@@ -25,7 +25,7 @@ namespace UDM.Services.Implementations
 		{
 			DataTable dt = new();
 
-			using SqlConnection con = new(_config.GetConnectionString("DefaultConnection"));
+			using SqlConnection con = _connectionProvider.GetConnection();
 			await con.OpenAsync();
 
 			using SqlCommand cmd = new($"select * from Contacts where Person_id = '{personID}'", con);
