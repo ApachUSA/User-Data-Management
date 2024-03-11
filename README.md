@@ -26,7 +26,7 @@ Simple web-based application for user data accounting. Realization of technical 
 1. Create DB (/SQL_Scripts/):
    - open and execute CreateTables.sql;
    - open and execute InsertData.sql;
-   - open and execute all procedure</br>;
+   - open and execute all procedure;</br>
 2. In **appsettings.json**, paste the name of your server and db in the connection string
 ```
     "ConnectionStrings": {
